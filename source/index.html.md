@@ -2,14 +2,11 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - csharp
 
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+# toc_footers:
+# - <a href='#'>Sign Up for a Developer Key</a>
+# - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
 
 includes:
   - errors
@@ -17,223 +14,209 @@ includes:
 search: true
 ---
 
-# Introduction
+# API Reference
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+Rhombus divides oracles into two broad buckets: how the oracle is activated and
+how the oracle replies. Our API for running oracles has predictable,
+resource-oriented functions.
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+# Activation Methods
 
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+## Periodic oracles
 
-# Authentication
+When a contract needs regularly updated information, a periodic Rhombus oracle
+is often the best solution. The oracle checks the data sources at regular
+intervals and updates the on-chain information whenever significant changes to
+that information have occurred.
 
-> To authorize, use this code:
+**Example:** Periodic gold prices for an exchange contract selling gold backed
+tokens.
 
-```ruby
-require 'kittn'
+> Every 5 minutes a Rhombus Oracle aggregates several gold price suppliers and
+> returns the median price to an exchange contract. If there is an anomaly in
+> the prices recovered, the exchange is informed of that fact so that it may
+> stop trading if necessary.
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+The user could save even more gas costs by requesting that the reply is only
+send when a certain price variation occurs, e.g. more than 1%.
+
+## Asynchronous oracles
+
+A contract may require information on an ad-hoc basis. A client would initiate
+these requests from their smart contract. A request may contain a number of
+parameters but should also contain a Unique ID (UID) tied to their oracle.
+Additionally, a nonce may be supplied to ensure that replies match requests.
+
+**Example:** Resolving a prediction market
+
+> At some day and time in the future, a prediction market will want to settle
+> the outstanding bets for a given proposition, like gas price. When the time
+> comes, it mines an event that activates a Rhombus Oracle which deliversthe
+> current gas price to the contract.
+
+# Reply Methods
+
+## Lighthouse contract
+
+Rhombus has a pre-written contract that we can deploy to decouple your oracle
+from your contract. They are fast to deploy and easily observed before
+committing to integrating the data.
+
+**Example:** A lighthouse contract that contains hourly asset price data
+
+> A market maker wants to observe the performance of a feed before integrating.
+> After a month passes, they are confident in its stability, consistency, and
+> performance. They integrate the price data into several of their smart
+> contracts.
+
+Features of a lighthouse contract
+
+- One or more data items as specified
+- A nonce - incremental or returned serial number
+- Time of update written into contract
+- Optional aging data expiry mechanism
+- Optional “poke” mechanism when updated
+
+## Direct delivery
+
+Where the Rhombus oracle is the sole information provider, it may be more
+efficient to write directly to your contract. The oracle can provide one or more
+data items as well as a nonce which helps serialize replies.
+
+**Example:** The gold spot price must be written directly to the gold exchange contract
+
+```csharp=
+function setSpotPrice(uint spotPrice, uint nonce);
 ```
 
-```python
-import kittn
+> `setSpotPrice` function signature is specified prior to delivery so the
+> Rhombus oracle can call it properly.
 
-api = kittn.authorize('meowmeowmeow')
-```
+# Getting Started
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+Below we'll demonstrate sample integrations with both Direct and Lighthouse
+delivery oracles.
 
-```javascript
-const kittn = require('kittn');
+#### Description of below code:
 
-let api = kittn.authorize('meowmeowmeow');
-```
+Alice's food kitchen has fallen on hard times so she launches a fundraiser on
+the ethereum blockchain.
 
-> Make sure to replace `meowmeowmeow` with your API key.
+Alice want's to thank each participant for their donation not in ETH terms but
+in USD terms. Rhombus, sympathetic to her needs has agreed to provide an ETH/USD
+oracle.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+On receiving a donation, the donor's address is logged and the oracle is asked
+to convert the eth value to USD. The donation is forwarded to Alice.
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+The oracle executes a direct reply to the contract's postUSDvalue function which
+causes the donations log to be updated and a Raised event to be emitted which
+Alice can monitor to publish a thank you note.
 
-`Authorization: meowmeowmeow`
+## [Direct Delivery] ETH Donations
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
+```csharp=
+pragma solidity ^0.4.24;
 
-# Kittens
+import "../rhombus/rhombusClient.sol";
 
-## Get All Kittens
+contract FundRaiser is RhombusClient {
 
-```ruby
-require 'kittn'
+    struct Donation {
+        address donor;
+        uint    amountInUSD;
+    }
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+    Donation[] public donations;
+    address public constant alice =  0x31EFd75bc0b5fbafc6015Bd50590f4fDab6a3F22;
 
-```python
-import kittn
+    event Raised(address donor, uint USDraised);
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
+    // on receiving a donation (in ether), we ask the Rhombus ETH to USD oracle to convert the amount
+    // but forward the amount to our favourite charity, Alice's Food Kitchen.
+    //
+    function () public payable {
+        if (msg.value == 0)
+            return;
+        Donation memory thisDonation;
+        thisDonation.donor = msg.sender;
+        uint pos = donations.push(thisDonation);
+        emitDoubleUint(0, pos-1, msg.value);
+        alice.transfer(msg.value);
+    }
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
+    // on receiving the USD value, the donation amount is updated and an event emitted.
+    // this function can only be called with valid, unused nonces.
+    //
+    function postUSDvalue(uint index, uint USDvalue) public onlyRhombus {
+        require(index < donations.length, "Invalid Index");
+        Donation storage d = donations[index];
+        require(d.amountInUSD == 0, "Record already updated");
+        d.amountInUSD = USDvalue;
+        emit Raised(d.donor, d.amountInUSD);
+    }
 
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
 }
 ```
 
-This endpoint retrieves a specific kitten.
+## [Lighthouse Delivery] Pay for video feed
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+#### Description of below code:
 
-### HTTP Request
+Alice's petting zoo also operates a video feed service that allows you to watch
+videos of the animals for a nominal fee of ten cents a minute.
 
-`GET http://example.com/kittens/<ID>`
+Since Alice is an ethereum fan, she controls the payments using an ethereum
+smart contract but that means she gets payments in ether not cents.
 
-### URL Parameters
+Rhombus, well known supporters of petting zoos worldwide, agree to provide a
+lighthouse supplying regularly updated data for the value of ten cents in eth.
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+The contract that Alice wrote provides a function inPaidTime() that can be
+called by the camera's streaming code to query whether the user has paid for
+their video time.
 
-## Delete a Specific Kitten
+```csharp=
+pragma solidity ^0.4.24;
 
-```ruby
-require 'kittn'
+import "../lighthouse/Ilighthouse.sol";
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
+contract TenCentsAMinute {
 
-```python
-import kittn
+    ILighthouse  public myLighthouse;
+    mapping(address => uint) public balances;
+    mapping(address => uint) public expiry;
+    uint public spentFees;
+    address public constant alice =  0x31EFd75bc0b5fbafc6015Bd50590f4fDab6a3F22;
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
+    constructor(ILighthouse _myLighthouse) public {
+        myLighthouse = _myLighthouse;
+    }
 
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+    function() public payable {
+        balances[msg.sender] += msg.value;
+    }
 
-```javascript
-const kittn = require('kittn');
+    function buyTime(uint minutesToBuy) public {
+        require(minutesToBuy != 0, "nothing to buy");
+        uint tenCentsOfETH;
+        bool ok;
+        (tenCentsOfETH,ok) = myLighthouse.peekData();
+        uint fee = tenCentsOfETH * minutesToBuy;
+        require(fee / minutesToBuy == tenCentsOfETH,"Overflow");
+        require(fee < balances[msg.sender],"Not enough funds");
+        expiry[msg.sender] = now + minutesToBuy * 1 minutes;
+        spentFees += fee;
+    }
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
+    function inPaidTime() public view returns (bool) {
+        return now < expiry[msg.sender];
+    }
 
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "deleted" : ":("
+    function withdrawFees() public {
+        require(alice == msg.sender, "Unauthorised");
+        alice.transfer(spentFees);
+        spentFees = 0;
+    }
 }
 ```
-
-This endpoint deletes a specific kitten.
-
-### HTTP Request
-
-`DELETE http://example.com/kittens/<ID>`
-
-### URL Parameters
-
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
-
