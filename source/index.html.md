@@ -100,7 +100,8 @@ contracts.
 
 ## Direct delivery
 
-> **Example:** The gold spot price must be written directly to the gold exchange contract
+> **Code Example** <br><br>
+> The gold spot price must be written directly to the gold exchange contract
 
 ```csharp
 function setSpotPrice(uint spotPrice, uint nonce);
@@ -119,9 +120,6 @@ Below we'll demonstrate sample integrations with both Direct and Lighthouse
 delivery oracles.
 
 ## Direct Delivery
-
-> Direct Delivery Example
-> The example below
 
 ```csharp
 pragma solidity ^0.4.24;
@@ -183,9 +181,6 @@ causes the donations log to be updated and a Raised event to be emitted which
 Alice can monitor to publish a thank you note.
 
 ## Lighthouse Delivery
-
-> Lighthouse Contract Example
-> 10 cents per minute
 
 ```csharp
 pragma solidity ^0.4.24;
