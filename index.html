@@ -335,7 +335,8 @@ contracts.
 </aside>
 <h2 id='direct-delivery'>Direct delivery</h2>
 <blockquote>
-<p><strong>Example:</strong> The gold spot price must be written directly to the gold exchange contract</p>
+<p><strong>Code Example</strong> <br><br>
+The gold spot price must be written directly to the gold exchange contract</p>
 </blockquote>
 <pre class="highlight csharp tab-csharp"><code><span class="n">function</span> <span class="nf">setSpotPrice</span><span class="p">(</span><span class="kt">uint</span> <span class="n">spotPrice</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">nonce</span><span class="p">);</span>
 </code></pre>
@@ -350,12 +351,7 @@ data items as well as a nonce which helps serialize replies.</p>
 <h1 id='getting-started'>Getting Started</h1>
 <p>Below we&#39;ll demonstrate sample integrations with both Direct and Lighthouse
 delivery oracles.</p>
-<h2 id='direct-delivery-2'>Direct Delivery</h2>
-<blockquote>
-<p>Direct Delivery Example
-The example below</p>
-</blockquote>
-<pre class="highlight csharp tab-csharp"><code><span class="n">pragma</span> <span class="n">solidity</span> <span class="p">^</span><span class="m">0.4</span><span class="p">.</span><span class="m">24</span><span class="p">;</span>
+<h2 id='direct-delivery-2'>Direct Delivery</h2><pre class="highlight csharp tab-csharp"><code><span class="n">pragma</span> <span class="n">solidity</span> <span class="p">^</span><span class="m">0.4</span><span class="p">.</span><span class="m">24</span><span class="p">;</span>
 
 <span class="n">import</span> <span class="s">"https://github.com/RhombusNetwork/rhombus-demos/blob/master/rhombus/rhombusClient.sol"</span><span class="p">;</span>
 
@@ -411,12 +407,7 @@ to convert the eth value to USD. The donation is forwarded to Alice.</p>
 <p>The oracle executes a direct reply to the contract&#39;s postUSDvalue function which
 causes the donations log to be updated and a Raised event to be emitted which
 Alice can monitor to publish a thank you note.</p>
-<h2 id='lighthouse-delivery'>Lighthouse Delivery</h2>
-<blockquote>
-<p>Lighthouse Contract Example
-10 cents per minute</p>
-</blockquote>
-<pre class="highlight csharp tab-csharp"><code><span class="n">pragma</span> <span class="n">solidity</span> <span class="p">^</span><span class="m">0.4</span><span class="p">.</span><span class="m">24</span><span class="p">;</span>
+<h2 id='lighthouse-delivery'>Lighthouse Delivery</h2><pre class="highlight csharp tab-csharp"><code><span class="n">pragma</span> <span class="n">solidity</span> <span class="p">^</span><span class="m">0.4</span><span class="p">.</span><span class="m">24</span><span class="p">;</span>
 
 <span class="n">import</span> <span class="s">"https://github.com/RhombusNetwork/rhombus-demos/blob/master/lighthouse/Ilighthouse.sol"</span><span class="p">;</span>
 
