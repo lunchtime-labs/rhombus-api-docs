@@ -2,10 +2,13 @@
 <!doctype html>
 <html>
   <head>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>API Reference</title>
+    <title>Rhombus API Reference</title>
 
     <style>
       .highlight table td { padding: 5px; }
@@ -201,7 +204,7 @@
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;csharp&quot;]">
+  <body class="index" data-languages="[]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -210,16 +213,13 @@
     </a>
     <div class="toc-wrapper">
       <img src="images/logo.png" class="logo" alt="Logo" />
-        <div class="lang-selector">
-              <a href="#" data-language-name="csharp">csharp</a>
-        </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
         </div>
         <ul class="search-results"></ul>
       <ul id="toc" class="toc-list-h1">
           <li>
-            <a href="#api-reference" class="toc-h1 toc-link" data-title="API Reference">API Reference</a>
+            <a href="#rhombus-api-reference" class="toc-h1 toc-link" data-title="Rhombus API Reference">Rhombus API Reference</a>
           </li>
           <li>
             <a href="#activation-methods" class="toc-h1 toc-link" data-title="Activation Methods">Activation Methods</a>
@@ -247,22 +247,19 @@
             <a href="#getting-started" class="toc-h1 toc-link" data-title="Getting Started">Getting Started</a>
               <ul class="toc-list-h2">
                   <li>
-                    <a href="#direct-delivery-eth-donations" class="toc-h2 toc-link" data-title="[Direct Delivery] ETH Donations">[Direct Delivery] ETH Donations</a>
+                    <a href="#direct-delivery-2" class="toc-h2 toc-link" data-title="Direct Delivery">Direct Delivery</a>
                   </li>
                   <li>
-                    <a href="#lighthouse-delivery-pay-for-video-feed" class="toc-h2 toc-link" data-title="[Lighthouse Delivery] Pay for video feed">[Lighthouse Delivery] Pay for video feed</a>
+                    <a href="#lighthouse-delivery" class="toc-h2 toc-link" data-title="Lighthouse Delivery">Lighthouse Delivery</a>
                   </li>
               </ul>
-          </li>
-          <li>
-            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
           </li>
       </ul>
     </div>
     <div class="page-wrapper">
       <div class="dark-box"></div>
       <div class="content">
-        <h1 id='api-reference'>API Reference</h1>
+        <h1 id='rhombus-api-reference'>Rhombus API Reference</h1>
 <p>Rhombus divides oracles into two broad buckets: how the oracle is activated and
 how the oracle replies. Our API for running oracles has predictable,
 resource-oriented functions.</p>
@@ -272,45 +269,47 @@ is often the best solution. The oracle checks the data sources at regular
 intervals and updates the on-chain information whenever significant changes to
 that information have occurred.</p>
 
-<p><strong>Example:</strong> Periodic gold prices for an exchange contract selling gold backed
-tokens.</p>
+<aside class="example">
+<span class="example-text">Example</span>
+<h3>
+Periodic gold prices for an exchange contract selling gold backed
+tokens.
+</h3>
 
-<blockquote>
-<p>Every 5 minutes a Rhombus Oracle aggregates several gold price suppliers and
+<p>
+Every 5 minutes a Rhombus Oracle aggregates several gold price suppliers and
 returns the median price to an exchange contract. If there is an anomaly in
 the prices recovered, the exchange is informed of that fact so that it may
-stop trading if necessary.</p>
-</blockquote>
+stop trading if necessary.
+</p>
 
-<p>The user could save even more gas costs by requesting that the reply is only
-send when a certain price variation occurs, e.g. more than 1%.</p>
+</aside>
+
+<aside class="notice">
+  The user could save even more gas costs by requesting that the reply is only
+  sent when a certain price variation occurs, e.g. more than 1%.
+</aside>
 <h2 id='asynchronous-oracles'>Asynchronous oracles</h2>
 <p>A contract may require information on an ad-hoc basis. A client would initiate
 these requests from their smart contract. A request may contain a number of
 parameters but should also contain a Unique ID (UID) tied to their oracle.
 Additionally, a nonce may be supplied to ensure that replies match requests.</p>
 
-<p><strong>Example:</strong> Resolving a prediction market</p>
+<aside class="example">
+<span class="example-text">Example</span>
+<h3>Resolving a Prediction Market</h3>
 
-<blockquote>
-<p>At some day and time in the future, a prediction market will want to settle
+<p>
+At some day and time in the future, a prediction market will want to settle
 the outstanding bets for a given proposition, like gas price. When the time
-comes, it mines an event that activates a Rhombus Oracle which deliversthe
-current gas price to the contract.</p>
-</blockquote>
+comes, it mines an event that activates a Rhombus Oracle which delivers the
+current gas price to the contract.
+</p>
+</aside>
 <h1 id='reply-methods'>Reply Methods</h1><h2 id='lighthouse-contract'>Lighthouse contract</h2>
 <p>Rhombus has a pre-written contract that we can deploy to decouple your oracle
 from your contract. They are fast to deploy and easily observed before
 committing to integrating the data.</p>
-
-<p><strong>Example:</strong> A lighthouse contract that contains hourly asset price data</p>
-
-<blockquote>
-<p>A market maker wants to observe the performance of a feed before integrating.
-After a month passes, they are confident in its stability, consistency, and
-performance. They integrate the price data into several of their smart
-contracts.</p>
-</blockquote>
 
 <p>Features of a lighthouse contract</p>
 
@@ -321,27 +320,85 @@ contracts.</p>
 <li>Optional aging data expiry mechanism</li>
 <li>Optional “poke” mechanism when updated</li>
 </ul>
-<h2 id='direct-delivery'>Direct delivery</h2>
-<p>Where the Rhombus oracle is the sole information provider, it may be more
-efficient to write directly to your contract. The oracle can provide one or more
-data items as well as a nonce which helps serialize replies.</p>
 
+<p><aside class="example">
+<span class="example-text">Example</span>
+<h3>A lighthouse contract that contains hourly asset price data</h3></p>
+
+<p>A market maker wants to observe the performance of a feed before integrating.
+After a month passes, they are confident in its stability, consistency, and
+performance. They integrate the price data into several of their smart
+contracts.</p>
+<h2 id='direct-delivery'>Direct delivery</h2>
+<blockquote>
 <p><strong>Example:</strong> The gold spot price must be written directly to the gold exchange contract</p>
-<pre class="highlight plaintext"><code>function setSpotPrice(uint spotPrice, uint nonce);
+</blockquote>
+<pre class="highlight csharp tab-csharp"><code><span class="n">function</span> <span class="nf">setSpotPrice</span><span class="p">(</span><span class="kt">uint</span> <span class="n">spotPrice</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">nonce</span><span class="p">);</span>
 </code></pre>
 <blockquote>
 <p><code>setSpotPrice</code> function signature is specified prior to delivery so the
 Rhombus oracle can call it properly.</p>
 </blockquote>
+
+<p>Where the Rhombus oracle is the sole information provider, it may be more
+efficient to write directly to your contract. The oracle can provide one or more
+data items as well as a nonce which helps serialize replies.</p>
 <h1 id='getting-started'>Getting Started</h1>
 <p>Below we&#39;ll demonstrate sample integrations with both Direct and Lighthouse
 delivery oracles.</p>
-<h4 id='description-of-below-code'>Description of below code:</h4>
+<h2 id='direct-delivery-2'>Direct Delivery</h2>
+<blockquote>
+<p>Direct Delivery Example
+The example below</p>
+</blockquote>
+<pre class="highlight csharp tab-csharp"><code><span class="n">pragma</span> <span class="n">solidity</span> <span class="p">^</span><span class="m">0.4</span><span class="p">.</span><span class="m">24</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="s">"https://github.com/RhombusNetwork/rhombus-demos/blob/master/rhombus/rhombusClient.sol"</span><span class="p">;</span>
+
+<span class="n">contract</span> <span class="n">FundRaiser</span> <span class="k">is</span> <span class="n">RhombusClient</span> <span class="p">{</span>
+
+    <span class="k">struct</span> <span class="nc">Donation</span> <span class="p">{</span>
+        <span class="n">address</span> <span class="n">donor</span><span class="p">;</span>
+        <span class="kt">uint</span>    <span class="n">amountInUSD</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">Donation</span><span class="p">[]</span> <span class="k">public</span> <span class="n">donations</span><span class="p">;</span>
+    <span class="n">address</span> <span class="k">public</span> <span class="n">constant</span> <span class="n">alice</span> <span class="p">=</span>  <span class="m">0x31EFd75bc0b5fbafc6015Bd50590f4fDab6a3F22</span><span class="p">;</span>
+
+    <span class="k">event</span> <span class="nf">Raised</span><span class="p">(</span><span class="n">address</span> <span class="n">donor</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">USDraised</span><span class="p">);</span>
+
+    <span class="c1">// On receiving a donation (in ether), we ask the Rhombus ETH to USD oracle</span>
+    <span class="c1">// to convert the amount but forward the amount to our favourite charity,</span>
+    <span class="c1">// Alice's Food Kitchen.</span>
+
+    <span class="nf">function</span> <span class="p">()</span> <span class="k">public</span> <span class="n">payable</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="k">value</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="n">Donation</span> <span class="n">memory</span> <span class="n">thisDonation</span><span class="p">;</span>
+        <span class="n">thisDonation</span><span class="p">.</span><span class="n">donor</span> <span class="p">=</span> <span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">;</span>
+        <span class="kt">uint</span> <span class="n">pos</span> <span class="p">=</span> <span class="n">donations</span><span class="p">.</span><span class="nf">push</span><span class="p">(</span><span class="n">thisDonation</span><span class="p">);</span>
+        <span class="nf">emitDoubleUint</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">pos</span><span class="p">-</span><span class="m">1</span><span class="p">,</span> <span class="n">msg</span><span class="p">.</span><span class="k">value</span><span class="p">);</span>
+        <span class="n">alice</span><span class="p">.</span><span class="nf">transfer</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="k">value</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="c1">// On receiving the USD value, the donation amount is updated and an event</span>
+    <span class="c1">// emitted. This function can only be called with valid, unused nonces.</span>
+
+    <span class="n">function</span> <span class="nf">postUSDvalue</span><span class="p">(</span><span class="kt">uint</span> <span class="n">index</span><span class="p">,</span> <span class="kt">uint</span> <span class="n">USDvalue</span><span class="p">)</span> <span class="k">public</span> <span class="n">onlyRhombus</span> <span class="p">{</span>
+        <span class="nf">require</span><span class="p">(</span><span class="n">index</span> <span class="p">&lt;</span> <span class="n">donations</span><span class="p">.</span><span class="n">length</span><span class="p">,</span> <span class="s">"Invalid Index"</span><span class="p">);</span>
+        <span class="n">Donation</span> <span class="n">storage</span> <span class="n">d</span> <span class="p">=</span> <span class="n">donations</span><span class="p">[</span><span class="n">index</span><span class="p">];</span>
+        <span class="nf">require</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">amountInUSD</span> <span class="p">==</span> <span class="m">0</span><span class="p">,</span> <span class="s">"Record already updated"</span><span class="p">);</span>
+        <span class="n">d</span><span class="p">.</span><span class="n">amountInUSD</span> <span class="p">=</span> <span class="n">USDvalue</span><span class="p">;</span>
+        <span class="n">emit</span> <span class="nf">Raised</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">donor</span><span class="p">,</span> <span class="n">d</span><span class="p">.</span><span class="n">amountInUSD</span><span class="p">);</span>
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre>
 <p>Alice&#39;s food kitchen has fallen on hard times so she launches a fundraiser on
 the ethereum blockchain.</p>
 
 <p>Alice want&#39;s to thank each participant for their donation not in ETH terms but
-in USD terms. Rhombus, sympathetic to her needs has agreed to provide an ETH/USD
+in USD terms. Rhombus, sympathetic to her needs, has agreed to provide an ETH/USD
 oracle.</p>
 
 <p>On receiving a donation, the donor&#39;s address is logged and the oracle is asked
@@ -350,48 +407,54 @@ to convert the eth value to USD. The donation is forwarded to Alice.</p>
 <p>The oracle executes a direct reply to the contract&#39;s postUSDvalue function which
 causes the donations log to be updated and a Raised event to be emitted which
 Alice can monitor to publish a thank you note.</p>
-<h2 id='direct-delivery-eth-donations'>[Direct Delivery] ETH Donations</h2><pre class="highlight plaintext"><code>pragma solidity ^0.4.24;
+<h2 id='lighthouse-delivery'>Lighthouse Delivery</h2>
+<blockquote>
+<p>Lighthouse Contract Example
+10 cents per minute</p>
+</blockquote>
+<pre class="highlight csharp tab-csharp"><code><span class="n">pragma</span> <span class="n">solidity</span> <span class="p">^</span><span class="m">0.4</span><span class="p">.</span><span class="m">24</span><span class="p">;</span>
 
-import "../rhombus/rhombusClient.sol";
+<span class="n">import</span> <span class="s">"https://github.com/RhombusNetwork/rhombus-demos/blob/master/lighthouse/Ilighthouse.sol"</span><span class="p">;</span>
 
-contract FundRaiser is RhombusClient {
+<span class="n">contract</span> <span class="n">TenCentsAMinute</span> <span class="p">{</span>
 
-    struct Donation {
-        address donor;
-        uint    amountInUSD;
-    }
+    <span class="n">ILighthouse</span>  <span class="k">public</span> <span class="n">myLighthouse</span><span class="p">;</span>
+    <span class="nf">mapping</span><span class="p">(</span><span class="n">address</span> <span class="p">=&gt;</span> <span class="kt">uint</span><span class="p">)</span> <span class="k">public</span> <span class="n">balances</span><span class="p">;</span>
+    <span class="nf">mapping</span><span class="p">(</span><span class="n">address</span> <span class="p">=&gt;</span> <span class="kt">uint</span><span class="p">)</span> <span class="k">public</span> <span class="n">expiry</span><span class="p">;</span>
+    <span class="kt">uint</span> <span class="k">public</span> <span class="n">spentFees</span><span class="p">;</span>
+    <span class="n">address</span> <span class="k">public</span> <span class="n">constant</span> <span class="n">alice</span> <span class="p">=</span>  <span class="m">0x31EFd75bc0b5fbafc6015Bd50590f4fDab6a3F22</span><span class="p">;</span>
 
-    Donation[] public donations;
-    address public constant alice =  0x31EFd75bc0b5fbafc6015Bd50590f4fDab6a3F22;
+    <span class="nf">constructor</span><span class="p">(</span><span class="n">ILighthouse</span> <span class="n">_myLighthouse</span><span class="p">)</span> <span class="k">public</span> <span class="p">{</span>
+        <span class="n">myLighthouse</span> <span class="p">=</span> <span class="n">_myLighthouse</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    event Raised(address donor, uint USDraised);
+    <span class="nf">function</span><span class="p">()</span> <span class="k">public</span> <span class="n">payable</span> <span class="p">{</span>
+        <span class="n">balances</span><span class="p">[</span><span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="p">+=</span> <span class="n">msg</span><span class="p">.</span><span class="k">value</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    // on receiving a donation (in ether), we ask the Rhombus ETH to USD oracle to convert the amount
-    // but forward the amount to our favourite charity, Alice's Food Kitchen.
-    //
-    function () public payable {
-        if (msg.value == 0)
-            return;
-        Donation memory thisDonation;
-        thisDonation.donor = msg.sender;
-        uint pos = donations.push(thisDonation);
-        emitDoubleUint(0, pos-1, msg.value);
-        alice.transfer(msg.value);
-    }
+    <span class="n">function</span> <span class="nf">buyTime</span><span class="p">(</span><span class="kt">uint</span> <span class="n">minutesToBuy</span><span class="p">)</span> <span class="k">public</span> <span class="p">{</span>
+        <span class="nf">require</span><span class="p">(</span><span class="n">minutesToBuy</span> <span class="p">!=</span> <span class="m">0</span><span class="p">,</span> <span class="s">"nothing to buy"</span><span class="p">);</span>
+        <span class="kt">uint</span> <span class="n">tenCentsOfETH</span><span class="p">;</span>
+        <span class="kt">bool</span> <span class="n">ok</span><span class="p">;</span>
+        <span class="p">(</span><span class="n">tenCentsOfETH</span><span class="p">,</span><span class="n">ok</span><span class="p">)</span> <span class="p">=</span> <span class="n">myLighthouse</span><span class="p">.</span><span class="nf">peekData</span><span class="p">();</span>
+        <span class="kt">uint</span> <span class="n">fee</span> <span class="p">=</span> <span class="n">tenCentsOfETH</span> <span class="p">*</span> <span class="n">minutesToBuy</span><span class="p">;</span>
+        <span class="nf">require</span><span class="p">(</span><span class="n">fee</span> <span class="p">/</span> <span class="n">minutesToBuy</span> <span class="p">==</span> <span class="n">tenCentsOfETH</span><span class="p">,</span><span class="s">"Overflow"</span><span class="p">);</span>
+        <span class="nf">require</span><span class="p">(</span><span class="n">fee</span> <span class="p">&lt;</span> <span class="n">balances</span><span class="p">[</span><span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">],</span><span class="s">"Not enough funds"</span><span class="p">);</span>
+        <span class="n">expiry</span><span class="p">[</span><span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">]</span> <span class="p">=</span> <span class="n">now</span> <span class="p">+</span> <span class="n">minutesToBuy</span> <span class="p">*</span> <span class="m">1</span> <span class="n">minutes</span><span class="p">;</span>
+        <span class="n">spentFees</span> <span class="p">+=</span> <span class="n">fee</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    // on receiving the USD value, the donation amount is updated and an event emitted.
-    // this function can only be called with valid, unused nonces.
-    //
-    function postUSDvalue(uint index, uint USDvalue) public onlyRhombus {
-        require(index &lt; donations.length, "Invalid Index");
-        Donation storage d = donations[index];
-        require(d.amountInUSD == 0, "Record already updated");
-        d.amountInUSD = USDvalue;
-        emit Raised(d.donor, d.amountInUSD);
-    }
+    <span class="n">function</span> <span class="nf">inPaidTime</span><span class="p">()</span> <span class="k">public</span> <span class="n">view</span> <span class="nf">returns</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">now</span> <span class="p">&lt;</span> <span class="n">expiry</span><span class="p">[</span><span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">];</span>
+    <span class="p">}</span>
 
-}
-</code></pre><h2 id='lighthouse-delivery-pay-for-video-feed'>[Lighthouse Delivery] Pay for video feed</h2><h4 id='description-of-below-code-2'>Description of below code:</h4>
+    <span class="n">function</span> <span class="nf">withdrawFees</span><span class="p">()</span> <span class="k">public</span> <span class="p">{</span>
+        <span class="nf">require</span><span class="p">(</span><span class="n">alice</span> <span class="p">==</span> <span class="n">msg</span><span class="p">.</span><span class="n">sender</span><span class="p">,</span> <span class="s">"Unauthorised"</span><span class="p">);</span>
+        <span class="n">alice</span><span class="p">.</span><span class="nf">transfer</span><span class="p">(</span><span class="n">spentFees</span><span class="p">);</span>
+        <span class="n">spentFees</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 <p>Alice&#39;s petting zoo also operates a video feed service that allows you to watch
 videos of the animals for a nominal fee of ten cents a minute.</p>
 
@@ -404,112 +467,9 @@ lighthouse supplying regularly updated data for the value of ten cents in eth.</
 <p>The contract that Alice wrote provides a function inPaidTime() that can be
 called by the camera&#39;s streaming code to query whether the user has paid for
 their video time.</p>
-<pre class="highlight plaintext"><code>pragma solidity ^0.4.24;
-
-import "../lighthouse/Ilighthouse.sol";
-
-contract TenCentsAMinute {
-
-    ILighthouse  public myLighthouse;
-    mapping(address =&gt; uint) public balances;
-    mapping(address =&gt; uint) public expiry;
-    uint public spentFees;
-    address public constant alice =  0x31EFd75bc0b5fbafc6015Bd50590f4fDab6a3F22;
-
-    constructor(ILighthouse _myLighthouse) public {
-        myLighthouse = _myLighthouse;
-    }
-
-    function() public payable {
-        balances[msg.sender] += msg.value;
-    }
-
-    function buyTime(uint minutesToBuy) public {
-        require(minutesToBuy != 0, "nothing to buy");
-        uint tenCentsOfETH;
-        bool ok;
-        (tenCentsOfETH,ok) = myLighthouse.peekData();
-        uint fee = tenCentsOfETH * minutesToBuy;
-        require(fee / minutesToBuy == tenCentsOfETH,"Overflow");
-        require(fee &lt; balances[msg.sender],"Not enough funds");
-        expiry[msg.sender] = now + minutesToBuy * 1 minutes;
-        spentFees += fee;
-    }
-
-    function inPaidTime() public view returns (bool) {
-        return now &lt; expiry[msg.sender];
-    }
-
-    function withdrawFees() public {
-        require(alice == msg.sender, "Unauthorised");
-        alice.transfer(spentFees);
-        spentFees = 0;
-    }
-}
-</code></pre><h1 id='errors'>Errors</h1>
-<aside class="notice">
-This error section is stored in a separate file in <code>includes/_errors.md</code>. Slate allows you to optionally separate out your docs into many files...just save them to the <code>includes</code> folder and add them to the top of your <code>index.md</code>'s frontmatter. Files are included in the order listed.
-</aside>
-
-<p>The Kittn API uses the following error codes:</p>
-
-<table><thead>
-<tr>
-<th>Error Code</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>400</td>
-<td>Bad Request -- Your request is invalid.</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
-</tr>
-</tbody></table>
 
       </div>
       <div class="dark-box">
-          <div class="lang-selector">
-                <a href="#" data-language-name="csharp">csharp</a>
-          </div>
       </div>
     </div>
   </body>
