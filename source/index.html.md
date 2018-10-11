@@ -89,10 +89,14 @@ Features of a lighthouse contract
 <span class="example-text">Example</span>
 <h3>A lighthouse contract that contains hourly asset price data</h3>
 
+<p>
 A market maker wants to observe the performance of a feed before integrating.
 After a month passes, they are confident in its stability, consistency, and
 performance. They integrate the price data into several of their smart
 contracts.
+</p>
+
+</aside>
 
 ## Direct delivery
 
