@@ -124,7 +124,7 @@ delivery oracles.
 ```csharp
 pragma solidity ^0.4.24;
 
-import "https://github.com/RhombusNetwork/rhombus-demos/blob/master/rhombus/rhombusClient.sol";
+import "./rhombusClient.sol";
 
 contract FundRaiser is RhombusClient {
 
@@ -185,7 +185,7 @@ Alice can monitor to publish a thank you note.
 ```csharp
 pragma solidity ^0.4.24;
 
-import "https://github.com/RhombusNetwork/rhombus-demos/blob/master/lighthouse/Ilighthouse.sol";
+import "./Ilighthouse.sol";
 
 contract TenCentsAMinute {
 
