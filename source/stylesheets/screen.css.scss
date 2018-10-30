@@ -516,17 +516,17 @@ body {
 
     &.example {
       background-color: $aside-example-bg;
+    }
 
-      h3,
-      p {
-        margin-top: 10px;
-      }
+    h3,
+    p {
+      margin-top: 10px;
+    }
 
-      .example-text {
-        font-weight: bold;
-        color: #333;
-        vertical-align: middle;
-      }
+    .aside-type {
+      font-weight: bold;
+      color: #333;
+      vertical-align: middle;
     }
   }
 

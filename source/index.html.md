@@ -30,7 +30,7 @@ intervals and updates the on-chain information whenever significant changes to
 that information have occurred.
 
 <aside class="example">
-<span class="example-text">Example</span>
+<span class="aside-type">Example</span>
 <h3>
 Periodic gold prices for an exchange contract selling gold backed
 tokens.
@@ -58,7 +58,7 @@ parameters but should also contain a Unique ID (UID) tied to their oracle.
 Additionally, a nonce may be supplied to ensure that replies match requests.
 
 <aside class="example">
-<span class="example-text">Example</span>
+<span class="aside-type">Example</span>
 <h3>Resolving a Prediction Market</h3>
 
 <p>
@@ -86,7 +86,7 @@ Features of a lighthouse contract
 - Optional “poke” mechanism when updated
 
 <aside class="example">
-<span class="example-text">Example</span>
+<span class="aside-type">Example</span>
 <h3>A lighthouse contract that contains hourly asset price data</h3>
 
 <p>
