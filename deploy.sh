@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit #abort if any command fails
 me=$(basename "$0")
+default_remote="staging"
 
 help_message="\
 Usage: $me [-c FILE] [<options>]
@@ -17,6 +18,8 @@ Options:
                            commit's message.
       --source-only        Only build but not push
       --push-only          Only push but not build
+  -r, --remote             Specify the 'git remote' repository to push to.
+                           Defaults to '$default_remote'
 "
 
 
@@ -49,6 +52,9 @@ parse_args() {
     elif [[ $1 = "-n" || $1 = "--no-hash" ]]; then
       GIT_DEPLOY_APPEND_HASH=false
       shift
+    elif [[ ( $1 = "-r" || $1 = "--remote" ) && -n $2 ]]; then
+      remote=$2
+      shift 2
     else
       break
     fi
@@ -66,7 +72,7 @@ parse_args() {
   default_email=${GIT_DEPLOY_EMAIL:-}
 
   #repository to deploy to. must be readable and writable.
-  repo=origin
+  repo=${remote:-$default_remote}
 
   #append commit hash to the end of message by default
   append_hash=${GIT_DEPLOY_APPEND_HASH:-true}
