@@ -2,12 +2,6 @@
 
 This repository holds the documentation for the [Rhombus][rhombus] project.
 
-The production deploy can be found at:
-http://docs.rhombus.network/.
-
-The staging deploy can be found at:
-https://lunchtime-labs.github.io/rhombus-api-docs
-
 This repository is a fork of the API Generator [Slate][slate]. It should be
 rebased off of the head of the upstream repository.
 
@@ -34,6 +28,9 @@ git pull upstream master --rebase
 
 ### Staging
 
+The staging deploy can be found at:
+https://lunchtime-labs.github.io/rhombus-api-docs
+
 Add the remote for staging:
 
 ```
@@ -46,7 +43,10 @@ Deploy to staging:
 ./deploy.sh -r staging
 ```
 
-### Staging
+### Production
+
+The production deploy can be found at:
+http://docs.rhombus.network/.
 
 Add the remote for production:
 
