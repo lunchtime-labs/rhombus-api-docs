@@ -7,8 +7,7 @@ rebased off of the head of the upstream repository.
 
 ## Getting Started
 
-For instructions on getting up and running, please refer to the README
-documentation for [Slate][slate].
+For instructions on getting up and running, please refer to the [Slate README][slate].
 
 ## Updating
 
@@ -26,9 +25,10 @@ git pull upstream master --rebase
 
 ## Deploying
 
+Code is deployed via GitHub Pages.
+
 ### Staging
 
-The staging deploy can be found at:
 https://lunchtime-labs.github.io/rhombus-api-docs
 
 Add the remote for staging:
@@ -45,7 +45,6 @@ Deploy to staging:
 
 ### Production
 
-The production deploy can be found at:
 http://docs.rhombus.network/.
 
 Add the remote for production:
